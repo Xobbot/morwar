@@ -1,0 +1,569 @@
+#------------------------------------------------------Бибилиотеки
+import random
+import time
+from math import fabs
+
+#------------------------------------------------------Личные функции и классы
+# разме доски, список кораблей.
+class Doska:
+        def __init__(self):
+                self.table =    [[' ',' |', '1', '|', '2', '|', '3', '|', '4', '|', '5', '|', '6', '|'],
+                                ['1',' |', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|'],
+                                ['2',' |', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|'],
+                                ['3',' |', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|'],
+                                ['4',' |', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|'],
+                                ['5',' |', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|'],
+                                ['6',' |', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|'],]
+                self.x = x
+                self.y = y
+
+        def ustanovka_ship (self):
+#           self.table[self.x][self.y] = 'x'
+            x1 = self.x
+            y1 = self.y
+            self.table[x1][y1] = 2
+            return self.table
+
+
+class Table:
+    def __init__(self):
+        self.table =[[' ',' |', '1', '|', '2', '|', '3', '|', '4', '|', '5', '|', '6', '|'],
+                    ['1',' |', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|'],
+                    ['2',' |', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|'],
+                    ['3',' |', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|'],
+                    ['4',' |', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|'],
+                    ['5',' |', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|'],
+                    ['6',' |', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|', 'О', '|'],]
+
+# r = режим создания таблицы 1 конструктор , 2 проставить мертвые позиции, 3 замена z на x, 4 замена на 0, 5  установка корабля
+    def reverse(self, x, y, r=1, rezus=''):
+        #4 затереть неудачу
+        self.x = x
+        self.y = y
+
+        if r == 1:
+            if self.table[y][(x-1)*2+2] != '■' and self.table[y][(x-1)*2+2] != 'X':
+                self.table[y][(x - 1) * 2 + 2] = '■' # точку можно поставить иначе нет
+                return 1
+            else:
+                return 0
+        elif r == 2:
+            #print('x = ', x,' y =', y )
+            if 0<y<7 and 0<x<7:
+                if self.table[y][(x - 1) * 2 + 2] != '■' and self.table[y][(x - 1) * 2 + 2] != 'X'  and self.table[y][(x - 1) * 2 + 2] != 'T':
+                    self.table[y][(x - 1) * 2 + 2] = 'z'  # точку можно поставить иначе нет
+        elif r == 3:
+            #print('x = ', x,' y =', y )
+            if 0<y<7 and 0<x<7:
+                if self.table[y][(x - 1) * 2 + 2] == 'z':
+                    self.table[y][(x - 1) * 2 + 2] = 'X'
+        elif r == 4:
+            # перевести все значения полей с не  '■' в О
+            if 0<y<7 and 0<x<7:
+                if self.table[y][(x - 1) * 2 + 2] != '■':
+                    self.table[y][(x - 1) * 2 + 2] = 'О'
+        elif r == 5:
+            # перевести все значения полей с не  '■' в О
+            self.table[y][(x - 1) * 2 + 2] = rezus
+
+
+
+ # -----------------------------------------------------------------------------------------------------------------
+    # проврка пустое ли поле, проверка в рамках пол ля ли.
+    def WhuIsIt(self, x, y, r=1, shag=0, step=0):
+        if 0 < y < 7 and 0 < x < 7:
+            #print('что в точке = ', self.table[y][(x-1)*2+2] ,' shag = ', shag , 'step = ', step)
+            if self.table[y][(x-1)*2+2] == 'О':
+                #print('хорошо попал 1')
+                return 1
+            else:
+                #print('не ноль 0')
+                return 0
+        else:
+            #print('за бортом 02')
+
+            return 0
+
+    # -----------------------------------------------------------------------------------------------------------------
+    # печать таблицы
+    def pritn_table(self, rebro=7):
+        i = 1
+        while i <= rebro:
+            print(' '.join(map(str, self.table[i - 1])))
+            i += 1
+
+    # -----------------------------------------------------------------------------------------------------------------
+    # вывод значения куда попал
+    def check(self, x, y, r=1):
+        self.x = x
+        self.y = y
+        if r == 1:
+            if 0 < y < 7 and 0 < x < 7:
+                if self.table[y][(x - 1) * 2 + 2] == '■':
+                    print('Бинго = ', self.table[y][(x - 1) * 2 + 2])
+                    return 1
+                else:
+                    print('Косяра в молоко = ', self.table[y][(x - 1) * 2 + 2])
+                    return 2
+            else:
+                print('вне поля ')
+                return 0
+
+
+
+class Ships:
+
+# -----------------------------------------------------------------------------------------------------------------
+    def mestoX(self):# указываем точку старта корабля по х
+        starpoziciyaX = random.randint(1, 6)
+        #print('x = ', starpoziciyaX)
+        return starpoziciyaX
+# -----------------------------------------------------------------------------------------------------------------
+    def mestoY(self):  # указываем точку старта корабля по y
+        starpoziciyaY = random.randint(1, 6)
+        #print( 'y = ', starpoziciyaY)
+        return starpoziciyaY
+# -----------------------------------------------------------------------------------------------------------------
+    def putr(self,lenig,XP,YP): # куда можно
+       # XP = self.mestoX()
+       # YP = self.mestoY()
+        nums = []
+       # print('Варианты')
+        if XP - lenig >=0:
+  #          print('лево можно = 1')
+            nums.append(1)
+        else:
+   #         print('права можно = 2')
+            nums.append(2)
+        if YP - lenig >= 0:
+   #         print('верх можно = 3')
+            nums.append(3)
+        else:
+    #        print('вниз можно = 4')
+            nums.append(4)
+        put = random.choice(nums)
+        #print( 'итогом можно = ',put)
+        return put
+# -----------------------------------------------------------------------------------------------------------------
+    def koordinatoship(self,lenig,tablo, shag, step):
+        #создание цикла установки кораблей, при пересечение пойдет заново весь процесс установки коробля.
+        Startconstruction = 0
+        shans = 100
+        while Startconstruction < shans:
+
+                XP = self.mestoX()
+                YP = self.mestoY()
+                # print('откуда X = ', XP)
+                # print('откуда Y = ', YP)
+                # куда идет корабля по розе ветров
+                putkuda = self.putr(lenig,XP,YP)
+    #            print('куда = ', putkuda)
+                #если на увеличение знак + иначе минус
+                koorShip =str('')
+                if putkuda % 2 == 0:
+                    znak =1
+                else:
+                    znak=-1
+                # выяснение по какаой оси через 1 2 это X 3 и 4 это Y
+                #Установка корабля на поле
+                listxy = []
+                i = 0
+                while i < lenig:
+                       # print('Палуба ', i, 'из ', lenig)
+                        if putkuda < 3:
+                            xput =  XP+i*znak
+                            yput = YP
+                            listxy.append([xput, yput])
+                            k3 = tablo.WhuIsIt(xput, yput, shag, shag)
+                           # k3 = tablo.reverse(xput,yput,1)# установкапалубы
+        #                    print('статус установки точки ',k3)
+                            if k3 ==1:# если удачно точка встала то переходим дальше , если не удачно цикл убиваем
+                                i += 1
+                            else:
+                                i += 100
+
+                        else:
+                            xput =  XP
+                            yput = YP + i * znak
+                            listxy.append([xput, yput])
+
+                            k3 = tablo.WhuIsIt(xput, yput, shag, shag)
+                            #k3 = tablo.reverse(xput, yput,1) # установкапалубы
+        #                    print('статус установки точки ', k3)
+                            if k3 ==1:# если удачно точка встала то переходим дальше , если не удачно цикл убиваем
+                                i += 1
+                            else:
+                                i += 100
+
+
+
+                if k3 == 1: #Корабль можно ставить .
+                    # установка коробля перебор точек и установка их на планшет
+                    #tablo.pritn_table()
+                    ListShipKoordinat = '0'+','+str(lenig)
+                    i = 0
+                    while i < lenig:
+                        #print('позиция x = ', listxy[i][0], ' / позиция y ', listxy[i][1])
+                        KS = tablo.reverse(listxy[i][0], listxy[i][1], 1)
+                        ListShipKoordinat = ListShipKoordinat +','+ str(listxy[i][0])+ str( listxy[i][1])
+                        i += 1
+
+
+
+                    # перебор круга
+                    p1=0
+                    # print( 'lenig = ', lenig, ' - ' ,listxy)
+                    if lenig == 1 or lenig== 2 or lenig==3:
+                        p1 = 0
+                        for p1 in range(0,3):
+                            p2 = 0
+                            while p2<3:
+                                #print('заштриховка мертвой зоны line = ', p1, 'поле =',p2)
+                                x = int(listxy[0][0])
+                                y = int(listxy[0][1])
+                                k4 = tablo.reverse(x+p2-1, y+p1-1, 2)
+
+                                p2+=1
+
+                    if lenig== 2 or lenig==3:
+                        p1 = 0
+                        for p1 in range(0,3):
+                            p2 = 0
+                            while p2<3:
+                               # print('заштриховка мертвой зоны line = ', p1, 'поле =',p2)
+                                x = int(listxy[1][0])
+                                y = int(listxy[1][1])
+                                k4 = tablo.reverse(x+p2-1, y+p1-1, 2)
+                                p2+=1
+
+                    if lenig == 3:
+                        p1 = 0
+                        for p1 in range(0,3):
+                            p2 = 0
+                            while p2<3:
+                               # print('заштриховка мертвой зоны line = ', p1, 'поле =',p2)
+                                x = int(listxy[2][0])
+                                y = int(listxy[2][1])
+                                k4 = tablo.reverse(x+p2-1, y+p1-1, 2)
+                                p2+=1
+                    #замена z на x
+                    p1 = 0
+                    for p1 in range(0,8):
+                        p2 = 0
+                        while p2<14:
+                            k4 = tablo.reverse(p2 - 1, p1  - 1, 3)
+                            p2+=1
+                        p1+=1
+
+                    #print('корабль встал  правильно номер =',Startconstruction )
+                    return ListShipKoordinat
+
+                else: #корабль встал не правильно нужно пересоздать.
+                    #print('корабль встал не правильно номер =',Startconstruction )
+                    Startconstruction +=1
+
+                if Startconstruction > shans-1:
+                    return 0
+
+
+#--------------------------------------------------------ИГРА
+print('start')
+#print('Доска ПК')
+tritrub = Ships()
+AIship = Table() # доска AI с кораблями
+#Список кораблей
+shipsList= [3,2,2,1,1,1,1]
+shipLine = ''
+#------------------------------------ Растановка кораблей AI -------------------------------
+perebor = 0
+shans = 100 # количестов шансов
+#------------------------------------------------------ цикл расстановки кораблей на таблице для компьютера
+while perebor <shans:
+    #таблица с расстановокой корбалей
+    ListAIShip = [['0', '3', ' ', ' ', ' '],
+                  ['0', '2', ' ', ' ', ' '],
+                  ['0', '2', ' ', ' ', ' '],
+                  ['0', '1', ' ', ' ', ' '],
+                  ['0', '1', ' ', ' ', ' '],
+                  ['0', '1', ' ', ' ', ' '],
+                  ['0', '1', ' ', ' ', ' '], ]
+    SL = 0
+    while SL < len(shipsList): # установка корабля из таблицы
+        #print('корабль = ',shipsList[SL] , 'цикл =  ' , perebor)
+        longShip = shipsList[SL] # длинна коробля
+        koordinat = tritrub.koordinatoship(longShip, AIship,perebor,SL)     # создание палуб на таблице
+        #AIship.pritn_table() # печать таблицы кораблей
+        #print('koordinat = ', koordinat)# результат установки
+        if koordinat !=0: # если не ноль корабль встал
+            shipLineList = list(koordinat.split(","))                           # перевод строки в список
+            #print('shipLineList 11= ', shipLineList)                              # вывод строки
+            for kolvo in range(2,int(ListAIShip[SL][1])+2):
+                ListAIShip[SL][kolvo] = shipLineList[kolvo]                     # перевод строки в список
+            #print('ListAIShip = ', ListAIShip)
+            SL += 1
+        else: # если  ноль корабль не встал выходим из цикла и начинаем цикл установки кораблей заново
+            SL += shans
+
+    if koordinat ==0:
+        perebor += 1
+        AIship = Table()
+    else:
+        perebor += shans
+        #print('все гууд')
+
+#------------------------------------------------------ очистка от X поля
+for i in range(0,7):
+    for j in range(0,7):
+        KN = AIship.reverse(i,j,4)
+print('корабль AIship')
+AIship.pritn_table()
+#print('корабль поставлен')
+
+
+#------------------------------------------------------ Растановка кораблей Человека -------------------------------
+tritrub = Ships()
+Manship = Table() # доска человека с кораблями
+#Список кораблей
+shipsList= [3,2,2,1,1,1,1]
+shipLine = ''
+perebor = 0
+shans = 100 # количестов шансов
+#------------------------------------------------------цикл расстановки кораблей на таблице для человека
+while perebor <shans:
+    #таблица с расстановокой корбалей
+    ListManShip = [['0', '3', ' ', ' ', ' '],
+                  ['0', '2', ' ', ' ', ' '],
+                  ['0', '2', ' ', ' ', ' '],
+                  ['0', '1', ' ', ' ', ' '],
+                  ['0', '1', ' ', ' ', ' '],
+                  ['0', '1', ' ', ' ', ' '],
+                  ['0', '1', ' ', ' ', ' '], ]
+    SL = 0
+    while SL < len(shipsList): # установка корабля из таблицы
+        #print('корабль = ',shipsList[SL] , 'цикл =  ' , perebor)
+        longShip = shipsList[SL] # длинна коробля
+        koordinat = tritrub.koordinatoship(longShip, Manship,perebor,SL)     # создание палуб на таблице
+        #AIship.pritn_table() # печать таблицы кораблей
+        #print('koordinat = ', koordinat)# результат установки
+        if koordinat !=0: # если не ноль корабль встал
+            shipLineList = list(koordinat.split(","))                           # перевод строки в список
+            #print('shipLineList 11= ', shipLineList)                              # вывод строки
+            for kolvo in range(2,int(ListManShip[SL][1])+2):
+                ListManShip[SL][kolvo] = shipLineList[kolvo]                     # перевод строки в список
+            #print('ListAIShip = ', ListAIShip)
+            SL += 1
+        else: # если  ноль корабль не встал выходим из цикла и начинаем цикл установки кораблей заново
+            SL += shans
+
+    if koordinat ==0:
+        perebor += 1
+        AIship = Table()
+    else:
+        perebor += shans
+        #print('все гууд')
+
+#очистка от X поля
+for i in range(0,7):
+    for j in range(0,7):
+        KN = Manship.reverse(i,j,4)
+print('корабль Manship')
+Manship.pritn_table()
+#print('корабль поставлен')
+
+
+
+#------------------------------------------------------ доски для стрельбы
+# Доска человека для стрельбы по кораблям AI
+ManShipTableWar = Table()
+# Доска компьютера для стрельбы по кораблям человека
+AiShipTableWar = Table()
+KolVoSteyps = 72 # количество ходов игры
+StepsWar = 0
+Partner = 0  # кто ходит 0 человек , 1 компьютер.
+#------------------------------------------------------ поля готовы начинется битва
+#------------------------------------------------------ стрельба_---------------------
+print('ListAIShip' , ListAIShip)
+print('ListManShip' , ListManShip)
+while StepsWar < KolVoSteyps:
+    proser = 1
+    # ------------------------------------------------------ кто стреляет ---------------------
+    if Partner == 0:
+        print('стреляет - человек наводка прицел пли')
+        plix = int(input('x = '))
+        pliy = int(input('y = '))
+        # ------------------------------------------------------куда попал челове---------------------
+        # проверки на дурака что он будет стрелять в мервую точку или убитый корабль нет
+        znacjheniye = AIship.check(plix, pliy) #check = 0 вне поля / 1 попал / 2 не попал
+        if znacjheniye == 0:
+            print('Ошибка перестреляйте Есть одна попытка иначе потеря хода ')
+            plix = int(input('x = '))
+            pliy = int(input('y = '))
+            znacjheniye = AIship.check(plix, pliy)
+            if znacjheniye == 0:
+                proser = 0
+
+    else:
+        print('стреляет - компьютер наводка прицел пли')
+        # N  попыток попасть хоть куда то не по старым точкам и не по убитым кораблям и не по мертвым точкам
+        kolvopopitokai = 10
+        popitkaal = 0# попытка
+        while popitkaal <= kolvopopitokai:
+            proser = 1
+            time.sleep(0)# задержка для стрельбы, для визуализации
+            starpoziciyaX = random.randint(1, 6)
+            print('starpoziciyaX = ', starpoziciyaX)
+            plix = starpoziciyaX
+            starpoziciyaY = random.randint(1, 6)
+            print('starpoziciyaX = ', starpoziciyaY)
+            pliy = starpoziciyaY
+            #pliy = 1
+            #plix = 1
+            #print('znacjheniye =', znacjheniye)
+            # ------------------------------------------------------куда компьютер в старую позицию или нет
+            # вне поля он не попадет рандом имеет границы
+            mapwar = AiShipTableWar.table[pliy][(plix - 1) * 2 + 2] # куда попал на доске компьютера по стрельбе по кораблям человека
+            # если он попал в нулевое поле значит это хороший выстрел идем дальше если он попал в старое поле перестреливаем
+            if mapwar == 'О':
+                print('правильный выстрел')
+                znacjheniye = Manship.check(plix, pliy)
+                popitkaal += kolvopopitokai+2
+            else:
+                print('перестрелка')
+                proser = 0
+                znacjheniye = 10
+            print('куда попал = ', mapwar)
+
+
+
+
+
+
+    #проверка куда попал
+    if znacjheniye == 1 and proser == 1: # попал надо проверить по координатам списка куда и убил ли ?
+        koordinatXY = str(plix) + str(pliy)
+        #print(koordinatXY)
+        i = 0
+        #если человек
+        if Partner == 0:  # 0 человек 1 комп
+            while i < 7:
+                j = 0
+                if ListAIShip[i][0] != ListAIShip[i][1]:
+                    while j < 5:
+                        if ListAIShip[i][j] == koordinatXY:
+                            # print('Нашел' , ListAIShip[i][0], 'количетво палуб =', ListAIShip[i][1])
+                            # ListAIShip[i][j] = 'x'
+                            ListAIShip[i][0] = str(int(ListAIShip[i][0]) + 1)
+                            if ListAIShip[i][0] == ListAIShip[i][1]:
+                                print('убил')
+                                print(ListAIShip[i])
+                                # поставить точки вокруг корабля
+                                for shag in range(0, int(ListAIShip[i][1])):
+                                    xy = ListAIShip[i][shag + 2]
+                                    print(xy[0], ' / ', xy[1])
+                                    x = int(xy[0])
+                                    y = int(xy[1])
+                                    p1 = 0
+                                    for p1 in range(0, 3):
+                                        p2 = 0
+                                        while p2 < 3:
+                                            # print('заштриховка мертвой зоны line = ', p1, 'поле =',p2)
+                                            k4 = ManShipTableWar.reverse(x + p2 - 1, y + p1 - 1, 2)
+                                            p2 += 1
+                                for p1 in range(0, 8):
+                                    p2 = 0
+                                    while p2 < 14:
+                                        k4 = ManShipTableWar.reverse(p2 - 1, p1 - 1, 3)
+                                        p2 += 1
+                                    p1 += 1
+
+
+                            else:
+                                print('ранил')
+                            j += 10
+                            i += 10
+                        else:
+                            j += 1
+                i += 1
+            ManShipTableWar.reverse(plix, pliy, 5, '■')
+
+
+        else:
+            while i < 7:
+                j = 0
+                if ListManShip[i][0] != ListManShip[i][1]:
+                    while j < 5:
+                        if ListManShip[i][j] == koordinatXY:
+                            # print('Нашел' , ListAIShip[i][0], 'количетво палуб =', ListAIShip[i][1])
+                            # ListAIShip[i][j] = 'x'
+                            ListManShip[i][0] = str(int(ListManShip[i][0]) + 1)
+                            if ListManShip[i][0] == ListManShip[i][1]:
+                                print('убил')
+                                print(ListManShip[i])
+                                # поставить точки вокруг корабля
+                                for shag in range(0, int(ListManShip[i][1])):
+                                    xy = ListManShip[i][shag + 2]
+                                    print(xy[0], ' / ', xy[1])
+                                    x = int(xy[0])
+                                    y = int(xy[1])
+                                    p1 = 0
+                                    for p1 in range(0, 3):
+                                        p2 = 0
+                                        while p2 < 3:
+                                            print('заштриховка мертвой зоны line = ', p1, 'поле =',p2)
+                                            k4 = AiShipTableWar.reverse(x + p2 - 1, y + p1 - 1, 2)
+                                            p2 += 1
+                                for p1 in range(0, 8):
+                                    p2 = 0
+                                    while p2 < 14:
+                                        k4 = AiShipTableWar.reverse(p2 - 1, p1 - 1, 3)
+                                        p2 += 1
+                                    p1 += 1
+
+
+                            else:
+                                print('ранил')
+                            j += 10
+                            i += 10
+                        else:
+                            j += 1
+                i += 1
+            AiShipTableWar.reverse(plix, pliy, 5, '■')
+
+        print('Попадание ходи еще раз')
+        print('печать карты после попаданя')
+        if Partner == 0:  # 0 человек 1 комп
+            ManShipTableWar.pritn_table()
+        else:
+            AiShipTableWar.pritn_table()
+
+
+    elif znacjheniye == 2  and proser == 1:# не попал
+        if Partner == 0: # 0 человек 1 комп
+            ManShipTableWar.reverse(plix, pliy,5,'T')
+        else:
+            AiShipTableWar.reverse(plix, pliy, 5, 'T')
+        print('печать карты после попаданя')
+        if Partner == 0:  # 0 человек 1 комп
+            ManShipTableWar.pritn_table()
+        else:
+            AiShipTableWar.pritn_table()
+        print('Мимо ходит противник')
+        if Partner == 0:
+            Partner = 1
+        else:
+            Partner = 0
+
+    elif proser == 0: # ошибку повторил потерял ход или если пк выбил все попытки попасть
+        print('печальный пропуск хода')
+        if Partner == 0:
+            Partner = 1
+        else:
+            Partner = 0
+
+    print('печать карты после попаданя')
+
+
+    StepsWar +=1
+
+
+
